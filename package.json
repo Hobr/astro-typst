@@ -35,6 +35,7 @@
     "start": "astro dev",
     "build": "pnpm test && tsc && astro check && astro build",
     "compile": "tsc",
+    "prepare": "tsc",
     "test": "node scripts/verify-typst.mjs",
     "preview": "astro preview",
     "pub": "pnpm compile && pnpm publish --no-git-checks",
