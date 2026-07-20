@@ -4,6 +4,7 @@
 <a href='https://typst.app/' target="_blank">
 <img alt='Supported Typst version: 0.13' src='https://img.shields.io/badge/Typst_0.13-100000?style=for-the-badge&logo=Typst&logoColor=30bdc1&labelColor=FFFFFF&color=30BDB2' />
 <img alt='Supported Typst version: 0.14' src='https://img.shields.io/badge/Typst_0.14-100000?style=for-the-badge&logo=Typst&logoColor=30bdc1&labelColor=FFFFFF&color=30BDB2' />
+<img alt='Supported Typst version: 0.15' src='https://img.shields.io/badge/Typst_0.15-100000?style=for-the-badge&logo=Typst&logoColor=30bdc1&labelColor=FFFFFF&color=30BDB2' />
 
 An Astro [Integration](https://astro.build/integrations/) that lets you render [Typst](https://github.com/typst/typst) within [Astro](https://github.com/withastro/astro) based on [typst.ts](https://github.com/Myriad-Dreamin/typst.ts). We have made you an Astro-ish wrapper that you cannot refuse!
 
@@ -69,6 +70,14 @@ To use typst v0.14, you need to install later typst.ts versions, respectively:
     "@myriaddreamin/typst-ts-node-compiler": "^0.7.0-rc2",
     "@myriaddreamin/typst-ts-renderer": "^0.7.0-rc2",
     "@myriaddreamin/typst.ts": "0.7.0-rc2",
+```
+
+To use typst v0.15, install the `0.8.0-rc3` release-candidate line:
+
+```json
+    "@myriaddreamin/typst-ts-node-compiler": "0.8.0-rc3",
+    "@myriaddreamin/typst-ts-renderer": "0.8.0-rc3",
+    "@myriaddreamin/typst.ts": "0.8.0-rc3",
 ```
 
 ## Usage
