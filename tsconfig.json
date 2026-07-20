@@ -12,6 +12,7 @@
       "ES2024"
     ],
     "outDir": "./dist",
+    "rootDir": "./src",
     "allowImportingTsExtensions": false,
     "noEmit": false,
     "sourceMap": true,
