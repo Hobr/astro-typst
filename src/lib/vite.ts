@@ -6,6 +6,7 @@ import { rehypeTypstx } from "./rehype.js";
 import logger from "./logger.js";
 import path from "node:path/posix";
 import { getAstroConfig } from "./store.js";
+import { registerTypstAsset } from "./typst-assets.js";
 
 function isTypstFile(id: string) {
     return /\.typ(\?(html|svg|html&body|body&html|html-text|html-hast))?$/.test(id);
@@ -26,13 +27,18 @@ function debug(...args: any[]) {
     }
 }
 
-export default function (config: AstroTypstConfig): Plugin {
+export default function (config: AstroTypstConfig, isAstroBuild = false): Plugin {
     const astroConfig = getAstroConfig();
     let server: ViteDevServer;
+    let command: 'build' | 'serve' = 'serve';
     const VITE_PLUGIN_NAME = 'vite-plugin-astro-typ';
     const plugin: Plugin = {
         name: VITE_PLUGIN_NAME,
         enforce: 'pre',
+
+        configResolved(resolvedConfig) {
+            command = resolvedConfig.command;
+        },
 
         load(id) {
             if (!isTypstFile(id)) return;
@@ -95,6 +101,9 @@ export default function (config: AstroTypstConfig): Plugin {
 
             // emitSvg: put svg to public dir and inline it as a base64 string (dev) / img (prod)
             if (emitSvg && !isHtml) {
+                const isBuild = isAstroBuild
+                    || this.environment?.mode === 'build'
+                    || command === 'build';
                 let imgSvg = "";
                 const contentHash = crypto.randomUUID().slice(0, 8);
                 const fileName = `typst-${contentHash}.svg`;
@@ -109,14 +118,19 @@ export default function (config: AstroTypstConfig): Plugin {
                     publicUrl,
                 })
 
-                if (import.meta.env.PROD) { // 'build' mode
+                if (isBuild) {
                     const emitName = path.join(emitSvgDir, fileName);
-                    const respId = this.emitFile({
-                        type: 'asset',
-                        fileName: emitName,
-                        source: Buffer.from(html, 'utf-8'),
-                    });
-                    logger.debug("emitFile", respId)
+                    if (isAstroBuild) {
+                        registerTypstAsset(emitName, html);
+                        logger.debug("registerTypstAsset", emitName);
+                    } else {
+                        const respId = this.emitFile({
+                            type: 'asset',
+                            fileName: emitName,
+                            source: Buffer.from(html, 'utf-8'),
+                        });
+                        logger.debug("emitFile", respId)
+                    }
                     imgSvg = `<img src='${publicUrl}' />`;
                 } else { // 'serve' mode inlines svg as base64
                     imgSvg = `<img src="data:image/svg+xml;base64,${Buffer.from(html, 'utf-8').toString('base64')}" />`;
@@ -167,6 +181,7 @@ export default Content;
             return {
                 code,
                 map: null,
+                moduleType: "js",
             }
         }
     }
